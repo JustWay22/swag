@@ -23,6 +23,8 @@
     --text: #f0f0f5;
     --text-dim: #8e8ea0;
     --gold: #ffd600;
+    --blue: #2196f3;
+    --orange: #ff9800;
   }
 
   body {
@@ -105,6 +107,7 @@
     min-width:140px; width:fit-content;
     cursor:pointer;
     transition:background 0.2s;
+    z-index:10;
   }
   .island:hover { background:rgba(0,0,0,0.85); }
   .island .star-icon { width:20px; height:20px; flex-shrink:0; }
@@ -176,10 +179,10 @@
     display:flex;
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     will-change:transform;
-    width:400%;
+    width:700%;
   }
   .section {
-    width:25%;
+    width:calc(100% / 7);
     flex-shrink:0;
     padding:0;
   }
@@ -195,21 +198,21 @@
     display:flex;
     max-width:576px;
     margin:0 auto;
-    padding:8px 6px 12px;
+    padding:8px 2px 12px;
   }
   .nav-btn {
     flex:1;
     background:none; border:none;
     display:flex; flex-direction:column;
-    align-items:center; gap:4px;
-    padding:6px 4px;
+    align-items:center; gap:3px;
+    padding:6px 2px;
     cursor:pointer;
     color:var(--text-dim);
-    font-family:inherit; font-size:11px; font-weight:600;
+    font-family:inherit; font-size:9px; font-weight:600;
     transition:color 0.2s;
   }
   .nav-btn.active { color:var(--accent); }
-  .nav-btn svg { width:22px; height:22px; }
+  .nav-btn svg { width:20px; height:20px; }
 
   /* ===== HOME SECTION ===== */
   .home-wrapper {
@@ -273,6 +276,8 @@
   .home-game-card.trading-card { box-shadow:0 4px 20px rgba(0,230,118,0.1); border-color:rgba(0,230,118,0.15); }
   .home-game-card.cases-card { box-shadow:0 4px 20px rgba(255,214,0,0.1); border-color:rgba(255,214,0,0.15); }
   .home-game-card.crash-card { box-shadow:0 4px 20px rgba(255,23,68,0.1); border-color:rgba(255,23,68,0.15); }
+  .home-game-card.miner-card { box-shadow:0 4px 20px rgba(33,150,243,0.1); border-color:rgba(33,150,243,0.15); }
+  .home-game-card.slots-card { box-shadow:0 4px 20px rgba(255,152,0,0.1); border-color:rgba(255,152,0,0.15); }
 
   .home-deposit-btn {
     width:100%; padding:16px; border-radius:16px; border:none;
@@ -285,6 +290,28 @@
   }
   .home-deposit-btn:active { transform:scale(0.97); }
   .home-deposit-btn img { width:20px; height:20px; }
+
+  /* ===== BONUSES ===== */
+  .bonuses-section {
+    width:100%; display:flex; flex-direction:column; gap:10px; margin-top:4px;
+  }
+  .bonus-card {
+    padding:16px; border-radius:16px;
+    background:var(--card-bg);
+    border:1px solid var(--card-border);
+    backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    display:flex; align-items:center; gap:12px;
+    cursor:pointer; transition:transform 0.2s;
+  }
+  .bonus-card:active { transform:scale(0.97); }
+  .bonus-icon {
+    width:48px; height:48px; border-radius:14px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:24px; flex-shrink:0;
+  }
+  .bonus-info { flex:1; }
+  .bonus-title { font-size:14px; font-weight:700; margin-bottom:3px; }
+  .bonus-desc { font-size:11px; color:var(--text-dim); line-height:1.4; }
 
   /* ===== CHART / TRADING ===== */
   .chart-bg-gif {
@@ -323,12 +350,34 @@
     0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 50%{transform:translateX(6px)} 75%{transform:translateX(-4px)}
   }
 
+  /* Trading chart - mood row & multiplier INSIDE */
+  .trading-game-wrapper {
+    position:relative;
+  }
   .chart-container {
-    width:100%; aspect-ratio:1.92/1;
+    width:100%;
     background:var(--bg-card); border:1px solid var(--card-border);
     border-radius:18px; overflow:hidden; position:relative; margin-bottom:12px;
+    transition:min-height 0.4s ease;
+    min-height:220px;
   }
   .chart-container canvas { width:100%; height:100%; display:block; position:relative; z-index:2; }
+
+  .trading-inner-overlay {
+    position:absolute; top:0; left:0; right:0; z-index:10;
+    padding:8px 10px 4px;
+    display:flex; flex-direction:column; align-items:center;
+    pointer-events:none;
+    transition:opacity 0.5s;
+  }
+  .trading-inner-overlay .mood-row { pointer-events:auto; margin-bottom:4px; }
+  .trading-inner-overlay .mood-card {
+    width:50px; height:50px; border-radius:12px;
+  }
+  .trading-inner-overlay .mood-card img { width:40px; height:40px; }
+  .trading-inner-overlay .multiplier-display { min-height:36px; pointer-events:auto; }
+  .trading-inner-overlay .multiplier-value { font-size:28px; }
+  .trading-inner-overlay .multiplier-label { font-size:10px; }
 
   .timer-bar-wrap { height:4px; background:rgba(255,255,255,0.08); border-radius:2px; margin-bottom:12px; overflow:hidden; }
   .timer-bar { height:100%; border-radius:2px; transition:width 0.3s linear,background 0.3s; background:var(--green); }
@@ -337,7 +386,7 @@
     position:absolute; top:0; left:0; width:100%; height:100%;
     background:rgba(17,17,20,0.75);
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    z-index:5; border-radius:18px;
+    z-index:15; border-radius:18px;
     opacity:0; pointer-events:none; transition:opacity 0.3s;
   }
   .countdown-overlay.visible { opacity:1; pointer-events:auto; }
@@ -705,10 +754,224 @@
     display:none;
   }
   .crash-explosion-img.visible { display:block; }
+
+  /* ===== MINER GAME ===== */
+  .miner-wrapper { padding:0 4px; }
+  .miner-title { text-align:center; font-size:20px; font-weight:800; margin-bottom:16px; }
+  .miner-game-card {
+    background:var(--card-bg); border:1px solid var(--card-border);
+    border-radius:20px; padding:20px;
+    backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  }
+  .miner-info-bar {
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:12px; padding:10px 14px;
+    background:rgba(255,255,255,0.04); border-radius:12px;
+  }
+  .miner-info-item { text-align:center; }
+  .miner-info-label { font-size:10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:2px; }
+  .miner-info-value { font-size:16px; font-weight:800; }
+  .miner-info-value.green { color:var(--green); }
+  .miner-info-value.gold { color:var(--gold); }
+
+  .miner-grid {
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:8px;
+    margin-bottom:16px;
+  }
+  .miner-cell {
+    aspect-ratio:1;
+    background:rgba(255,255,255,0.06);
+    border:2px solid var(--card-border);
+    border-radius:14px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    transition:transform 0.15s, background 0.2s, border-color 0.2s;
+    font-size:28px;
+    position:relative;
+    overflow:hidden;
+  }
+  .miner-cell:hover:not(.revealed) { border-color:rgba(124,77,255,0.4); background:rgba(124,77,255,0.08); }
+  .miner-cell:active:not(.revealed) { transform:scale(0.92); }
+  .miner-cell.revealed { cursor:default; }
+  .miner-cell.diamond { background:rgba(0,230,118,0.12); border-color:rgba(0,230,118,0.3); }
+  .miner-cell.mine { background:rgba(255,23,68,0.12); border-color:rgba(255,23,68,0.3); }
+  .miner-cell img { width:32px; height:32px; object-fit:contain; }
+  .miner-info-value .star-icon-sm, .miner-result-amount .star-icon { width:14px; height:14px; }
+  .miner-bet-section .star-icon { width:14px; height:14px; }
+  .miner-controls .star-icon { width:16px; height:16px; }
+  .miner-wrapper .star-icon { width:14px; height:14px; }
+
+  /* Loading Splash */
+  .splash-overlay {
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    z-index:9999;
+    background:#111114;
+    display:flex; align-items:center; justify-content:center;
+    transition:opacity 0.6s ease;
+  }
+  .splash-overlay.fade-out {
+    opacity:0;
+    pointer-events:none;
+  }
+  .splash-overlay img {
+    max-width:80%;
+    max-height:80%;
+    object-fit:contain;
+    border-radius:20px;
+  }
+  .miner-cell .cell-shine {
+    position:absolute; inset:0;
+    background:radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+    opacity:0; transition:opacity 0.3s;
+  }
+  .miner-cell.diamond .cell-shine { opacity:1; }
+
+  .miner-controls {
+    display:flex; gap:10px;
+  }
+  .miner-controls .action-btn { flex:1; margin-bottom:0; }
+
+  .miner-bet-section {
+    margin-bottom:16px;
+  }
+  .miner-bet-options {
+    display:flex; gap:8px; flex-wrap:wrap;
+  }
+  .miner-bet-opt {
+    padding:10px 16px; border-radius:12px;
+    background:rgba(255,255,255,0.06);
+    border:2px solid transparent;
+    font-family:inherit; font-size:14px; font-weight:700;
+    color:var(--text); cursor:pointer;
+    display:flex; align-items:center; gap:4px;
+    transition:border-color 0.2s, background 0.2s;
+  }
+  .miner-bet-opt:hover, .miner-bet-opt.selected { border-color:var(--accent); background:rgba(124,77,255,0.12); }
+  .miner-bet-opt .star-icon { width:14px; height:14px; }
+
+  .miner-mines-select {
+    display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;
+  }
+  .miner-mines-opt {
+    padding:8px 14px; border-radius:10px;
+    background:rgba(255,255,255,0.06);
+    border:2px solid transparent;
+    font-family:inherit; font-size:13px; font-weight:700;
+    color:var(--text); cursor:pointer;
+    transition:border-color 0.2s, background 0.2s;
+  }
+  .miner-mines-opt:hover, .miner-mines-opt.selected { border-color:var(--red); background:rgba(255,23,68,0.12); }
+
+  .miner-result-overlay {
+    position:absolute; top:0; left:0; right:0; bottom:0;
+    background:rgba(17,17,20,0.85);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    z-index:10; border-radius:20px;
+    opacity:0; pointer-events:none; transition:opacity 0.3s;
+  }
+  .miner-result-overlay.visible { opacity:1; pointer-events:auto; }
+  .miner-result-text { font-size:28px; font-weight:900; margin-bottom:8px; }
+  .miner-result-amount { font-size:18px; font-weight:700; display:flex; align-items:center; gap:6px; }
+
+  /* ===== SLOTS GAME ===== */
+  .slots-wrapper { padding:0 4px; }
+  .slots-title { text-align:center; font-size:20px; font-weight:800; margin-bottom:16px; }
+  .slots-game-card {
+    background:var(--card-bg); border:1px solid var(--card-border);
+    border-radius:20px; padding:20px;
+    backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .slots-machine {
+    background:rgba(0,0,0,0.4);
+    border:2px solid rgba(255,152,0,0.2);
+    border-radius:18px; padding:20px;
+    margin-bottom:16px; width:100%;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .slots-reels {
+    display:flex; gap:12px; justify-content:center;
+    margin-bottom:16px;
+  }
+  .slot-reel {
+    width:80px; height:90px;
+    background:rgba(255,255,255,0.06);
+    border:2px solid var(--card-border);
+    border-radius:14px;
+    overflow:hidden;
+    position:relative;
+  }
+  .slot-reel-track {
+    position:absolute; top:0; left:0; width:100%;
+    display:flex; flex-direction:column; align-items:center;
+    transition:transform 1.5s cubic-bezier(0.15, 0.85, 0.35, 1);
+  }
+  .slot-reel-item {
+    width:80px; height:90px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .slot-reel-item img { width:56px; height:56px; object-fit:contain; }
+  .slots-result-text {
+    font-size:20px; font-weight:800; text-align:center;
+    min-height:28px; margin-bottom:12px;
+    transition:color 0.3s;
+  }
+  .slots-result-text.win { color:var(--gold); }
+  .slots-result-text.lose { color:var(--red); }
+  .slots-result-text.big-win { color:var(--green); font-size:24px; }
+
+  .slots-bet-section { width:100%; margin-bottom:12px; }
+  .slots-bet-options {
+    display:flex; gap:8px; justify-content:center; flex-wrap:wrap;
+  }
+  .slots-bet-opt {
+    padding:10px 18px; border-radius:12px;
+    background:rgba(255,255,255,0.06);
+    border:2px solid transparent;
+    font-family:inherit; font-size:14px; font-weight:700;
+    color:var(--text); cursor:pointer;
+    display:flex; align-items:center; gap:4px;
+    transition:border-color 0.2s, background 0.2s;
+  }
+  .slots-bet-opt:hover, .slots-bet-opt.selected { border-color:var(--orange); background:rgba(255,152,0,0.12); }
+  .slots-bet-opt .star-icon { width:14px; height:14px; }
+
+  .slots-spin-btn {
+    width:100%; padding:16px; border-radius:16px; border:none;
+    background:linear-gradient(135deg, #ff9800, #ff5722);
+    color:#fff;
+    font-family:inherit; font-size:17px; font-weight:700; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    box-shadow:0 4px 24px rgba(255,152,0,0.35);
+    transition:transform 0.15s;
+  }
+  .slots-spin-btn:active { transform:scale(0.97); }
+  .slots-spin-btn:disabled { opacity:0.5; cursor:default; }
+  .slots-spin-btn .star-icon { width:22px; height:22px; }
+
+  .slots-rules {
+    margin-top:12px; padding:12px; width:100%;
+    background:rgba(255,255,255,0.04); border-radius:12px;
+  }
+  .slots-rules-title { font-size:12px; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+  .slots-rule-row {
+    display:flex; align-items:center; gap:8px;
+    font-size:12px; color:var(--text-dim); margin-bottom:4px;
+  }
+  .slots-rule-row img { width:20px; height:20px; }
+  .slots-rule-row span { font-weight:700; }
 </style>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
+
+<!-- SPLASH LOADING SCREEN -->
+<div class="splash-overlay" id="splashOverlay">
+  <img src="https://i.postimg.cc/KvQrd4PC/apyv.jpg" alt="Loading">
+</div>
 
 <!-- LOGIN OVERLAY -->
 <div class="login-overlay" id="loginOverlay">
@@ -740,7 +1003,7 @@
 </div>
 
 <div class="app">
-  <div class="island" onclick="openDeposit()">
+  <div class="island" id="balanceIsland" onclick="openDeposit()">
     <img class="star-icon" src="https://nztcdn.com/files/6514f1e6-dab4-4d49-806a-3ff22d7793e5.webp" alt="star">
     <span class="balance-text" id="balanceDisplay">1000</span>
     <div class="plus-icon">+</div>
@@ -785,13 +1048,56 @@
                 <div class="home-game-desc">Открывай кейсы и получай призы</div>
               </div>
             </div>
-            <div class="home-game-card crash-card" onclick="switchSection(3)" style="grid-column:1/3;">
+            <div class="home-game-card crash-card" onclick="switchSection(3)">
               <div style="width:100%;height:100px;background:linear-gradient(135deg,#1a0a0a,#19191f);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;">
                 <img src="https://i.postimg.cc/QxvmXD36/Animated-Ag-ADyxs-AAte-Jk-Us.gif" style="width:70px;height:70px;object-fit:contain;filter:drop-shadow(0 0 12px rgba(255,23,68,0.5));" alt="">
               </div>
               <div class="home-game-info">
                 <div class="home-game-name" style="color:var(--red);">Краш</div>
-                <div class="home-game-desc">Ракета летит вверх - успей забрать до взрыва!</div>
+                <div class="home-game-desc">Успей забрать до взрыва!</div>
+              </div>
+            </div>
+            <div class="home-game-card miner-card" onclick="switchSection(4)">
+              <div style="width:100%;height:100px;background:linear-gradient(135deg,#0a1a2e,#19191f);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;">
+                <img src="https://emojio.ru/images/apple-b/1f48e.png" style="width:60px;height:60px;object-fit:contain;filter:drop-shadow(0 0 12px rgba(33,150,243,0.5));" alt="">
+              </div>
+              <div class="home-game-info">
+                <div class="home-game-name" style="color:var(--blue);">Минер</div>
+                <div class="home-game-desc">Найди алмазы, избегай мин!</div>
+              </div>
+            </div>
+            <div class="home-game-card slots-card" onclick="switchSection(5)" style="grid-column:1/3;">
+              <div style="width:100%;height:100px;background:linear-gradient(135deg,#2a1500,#19191f);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;gap:10px;">
+                <img src="https://emojio.ru/images/apple-b/1f352.png" style="width:50px;height:50px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(255,152,0,0.5));" alt="">
+                <img src="https://em-content.zobj.net/source/apple/25/keycap-digit-seven_37-20e3.png" style="width:50px;height:50px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(255,152,0,0.5));" alt="">
+                <img src="https://emojio.ru/images/apple-b/1f34e.png" style="width:50px;height:50px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(255,152,0,0.5));" alt="">
+              </div>
+              <div class="home-game-info">
+                <div class="home-game-name" style="color:var(--orange);">Слоты</div>
+                <div class="home-game-desc">Крути барабаны и выигрывай!</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BONUSES -->
+          <div class="home-games-title" style="margin-top:12px;">Бонусы</div>
+          <div class="bonuses-section">
+            <div class="bonus-card" onclick="openDeposit()">
+              <div class="bonus-icon" style="background:rgba(0,230,118,0.15);">
+                <span style="font-size:22px;">+</span>
+              </div>
+              <div class="bonus-info">
+                <div class="bonus-title" style="color:var(--green);">+150% к первому пополнению</div>
+                <div class="bonus-desc">Пополни баланс и получи бонус +150% к сумме первого пополнения!</div>
+              </div>
+            </div>
+            <div class="bonus-card" onclick="window.open('https://t.me/obnalcontora','_blank')">
+              <div class="bonus-icon" style="background:rgba(124,77,255,0.15);">
+                <span style="font-size:22px;">&#127916;</span>
+              </div>
+              <div class="bonus-info">
+                <div class="bonus-title" style="color:var(--accent);">Подарок за сторис</div>
+                <div class="bonus-desc">Выложите видео в сторис и получите случайный подарок от 15 до 100 звезд! Для проверки напишите <b style="color:var(--accent);">@obnalcontora</b></div>
               </div>
             </div>
           </div>
@@ -805,39 +1111,44 @@
 
       <!-- ===== TRADING SECTION ===== -->
       <div class="section" id="tradingSection">
-        <div class="history-row" id="historyRow"></div>
-        <div class="mood-row">
-          <div class="mood-card" id="mood1"><img src="https://emojio.ru/images/apple-b/1f559.png" alt="mood"></div>
-          <div class="mood-card" id="mood2"><img src="https://emojio.ru/images/apple-b/1f559.png" alt="mood"></div>
-          <div class="mood-card" id="mood3"><img src="https://emojio.ru/images/apple-b/1f559.png" alt="mood"></div>
-        </div>
-        <div class="multiplier-display">
-          <div class="multiplier-value green" id="multiplierValue">1.00x</div>
-          <div class="multiplier-label" id="multiplierLabel">Ожидание ставок...</div>
-        </div>
-        <div class="chart-container" id="chartContainer">
-          <div class="chart-bg-gif"><img src="https://i.postimg.cc/vTxyCnfx/0219.gif" alt=""></div>
-          <div class="chart-bg-overlay"></div>
-          <canvas id="chartCanvas"></canvas>
-          <div class="countdown-overlay" id="countdownOverlay">
-            <div class="countdown-number" id="countdownNumber">3</div>
-            <div class="countdown-label">Новый раунд</div>
-          </div>
-          <div id="floatingNicks"></div>
-        </div>
-        <div class="timer-bar-wrap"><div class="timer-bar" id="timerBar" style="width:100%"></div></div>
-        <button class="action-btn play-btn" id="actionBtn" onclick="onActionClick()">
-          <span id="actionText">СДЕЛАТЬ СТАВКУ</span>
-          <img class="star-icon" src="https://nztcdn.com/files/6514f1e6-dab4-4d49-806a-3ff22d7793e5.webp" alt="star">
-        </button>
-        <div class="players-panel">
-          <div class="players-header">
-            <div class="players-header-left" id="playersCount">0 игроков</div>
-            <div class="players-header-right" id="playersTotalBets">
-              0 <img class="star-icon" src="https://nztcdn.com/files/6514f1e6-dab4-4d49-806a-3ff22d7793e5.webp" alt="">
+        <div class="trading-game-wrapper">
+          <div class="history-row" id="historyRow"></div>
+          <div class="chart-container" id="chartContainer">
+            <div class="chart-bg-gif"><img src="https://i.postimg.cc/vTxyCnfx/0219.gif" alt=""></div>
+            <div class="chart-bg-overlay"></div>
+            <canvas id="chartCanvas"></canvas>
+            <!-- Inner overlay: mood + multiplier INSIDE chart -->
+            <div class="trading-inner-overlay" id="tradingInnerOverlay">
+              <div class="mood-row">
+                <div class="mood-card" id="mood1"><img src="https://emojio.ru/images/apple-b/1f559.png" alt="mood"></div>
+                <div class="mood-card" id="mood2"><img src="https://emojio.ru/images/apple-b/1f559.png" alt="mood"></div>
+                <div class="mood-card" id="mood3"><img src="https://emojio.ru/images/apple-b/1f559.png" alt="mood"></div>
+              </div>
+              <div class="multiplier-display">
+                <div class="multiplier-value green" id="multiplierValue">1.00x</div>
+                <div class="multiplier-label" id="multiplierLabel">Ожидание ставок...</div>
+              </div>
             </div>
+            <div class="countdown-overlay" id="countdownOverlay">
+              <div class="countdown-number" id="countdownNumber">3</div>
+              <div class="countdown-label">Новый раунд</div>
+            </div>
+            <div id="floatingNicks"></div>
           </div>
-          <div id="playersList"></div>
+          <div class="timer-bar-wrap"><div class="timer-bar" id="timerBar" style="width:100%"></div></div>
+          <button class="action-btn play-btn" id="actionBtn" onclick="onActionClick()">
+            <span id="actionText">СДЕЛАТЬ СТАВКУ</span>
+            <img class="star-icon" src="https://nztcdn.com/files/6514f1e6-dab4-4d49-806a-3ff22d7793e5.webp" alt="star">
+          </button>
+          <div class="players-panel">
+            <div class="players-header">
+              <div class="players-header-left" id="playersCount">0 игроков</div>
+              <div class="players-header-right" id="playersTotalBets">
+                0 <img class="star-icon" src="https://nztcdn.com/files/6514f1e6-dab4-4d49-806a-3ff22d7793e5.webp" alt="">
+              </div>
+            </div>
+            <div id="playersList"></div>
+          </div>
         </div>
       </div>
 
@@ -845,17 +1156,13 @@
       <div class="section" id="casesSection">
         <div class="cases-wrapper">
           <div class="cases-title">Кейсы</div>
-
-          <!-- Case previews (clickable cards with images) -->
           <div id="casePreviews">
             <div class="case-preview-card" onclick="openCase('free')">
               <img class="case-preview-img" src="https://i.postimg.cc/Y9QpJwQN/ufafyafyaf.png" alt="Free Case">
               <div class="case-preview-name">Бесплатный кейс</div>
-              <div class="case-preview-price free-price">БЕСПЛАТ  О</div>
+              <div class="case-preview-price free-price">БЕСПЛАТНО</div>
             </div>
           </div>
-
-          <!-- Free case (hidden until clicked) -->
           <div class="case-card" id="freeCaseCard">
             <button class="case-back-btn" onclick="closeCaseView()">Назад к кейсам</button>
             <div class="case-header">
@@ -914,6 +1221,139 @@
         </div>
       </div>
 
+      <!-- ===== MINER SECTION ===== -->
+      <div class="section" id="minerSection">
+        <div class="miner-wrapper">
+          <div class="miner-title">Минер</div>
+          <div class="miner-game-card" style="position:relative;">
+            <div class="miner-info-bar">
+              <div class="miner-info-item">
+                <div class="miner-info-label">Ставка</div>
+                <div class="miner-info-value gold" id="minerBetDisplay">50</div>
+              </div>
+              <div class="miner-info-item">
+                <div class="miner-info-label">Мины</div>
+                <div class="miner-info-value" style="color:var(--red);" id="minerMinesDisplay">5</div>
+              </div>
+              <div class="miner-info-item">
+                <div class="miner-info-label">Алмазы</div>
+                <div class="miner-info-value green" id="minerFoundDisplay">0</div>
+              </div>
+              <div class="miner-info-item">
+                <div class="miner-info-label">Множитель</div>
+                <div class="miner-info-value green" id="minerMultDisplay">1.00x</div>
+              </div>
+            </div>
+
+            <div class="sheet-section-label">Ставка</div>
+            <div class="miner-bet-section">
+              <div class="miner-bet-options" id="minerBetOptions">
+                <button class="miner-bet-opt" onclick="selectMinerBet(10,this)">10 <img class="star-icon" src="https://nztcdn.com/files/6514f1e6-dab4-4d49-806a-3ff22d7793e5.webp" alt=""></button>
+                <button class="miner-bet-opt" onclick="selectMinerBet(25,this)">25 <img class="star-icon" src="https://nztcdn.com/files/6514f1e6-dab4-4d49-806a-3ff22d7793e5.webp" alt=""></button>
+                <button class="miner-bet-opt selected" onclick="selectMinerBet(50,this)">50 <img class="star-icon" src="https://nztcdn.com/files/6514f1e6-dab4-4d49-806a-3ff22d7793e5.webp" alt=""></button>
+                <button class="miner-bet-opt" onclick="selectMinerBet(100,this)">100 <img class="star-icon" src="https://nztcdn.com/files/6514f1e6-dab4-4d49-806a-3ff22d7793e5.webp" alt=""></button>
+              </div>
+            </div>
+
+            <div class="sheet-section-label">Количество мин</div>
+            <div class="miner-mines-select" id="minerMinesSelect">
+              <button class="miner-mines-opt" onclick="selectMines(3,this)">3</button>
+              <button class="miner-mines-opt selected" onclick="selectMines(5,this)">5</button>
+              <button class="miner-mines-opt" onclick="selectMines(7,this)">7</button>
+              <button class="miner-mines-opt" onclick="selectMines(10,this)">10</button>
+            </div>
+
+            <div class="miner-grid" id="minerGrid"></div>
+
+            <div class="miner-controls">
+              <button class="action-btn play-btn" id="minerPlayBtn" onclick="minerStartGame()" style="flex:1;">
+                <span id="minerPlayText">НАЧАТЬ ИГРУ</span>
+                <img class="star-icon" src="https://nztcdn.com/files/6514f1e6-dab4-4d49-806a-3ff22d7793e5.webp" alt="">
+              </button>
+              <button class="action-btn cashout-btn" id="minerCashoutBtn" onclick="minerCashout()" style="flex:1;display:none;">
+                <span id="minerCashoutText">ЗАБРАТЬ</span>
+              </button>
+            </div>
+
+            <div class="miner-result-overlay" id="minerResultOverlay">
+              <div class="miner-result-text" id="minerResultText"></div>
+              <div class="miner-result-amount" id="minerResultAmount"></div>
+              <button class="action-btn play-btn" onclick="minerReset()" style="margin-top:16px;width:200px;">ИГРАТЬ ЕЩЁ</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SLOTS SECTION ===== -->
+      <div class="section" id="slotsSection">
+        <div class="slots-wrapper">
+          <div class="slots-title">Слот-машина</div>
+          <div class="slots-game-card">
+            <div class="slots-machine">
+              <div class="slots-reels">
+                <div class="slot-reel" id="slotReel1"><div class="slot-reel-track" id="slotTrack1"></div></div>
+                <div class="slot-reel" id="slotReel2"><div class="slot-reel-track" id="slotTrack2"></div></div>
+                <div class="slot-reel" id="slotReel3"><div class="slot-reel-track" id="slotTrack3"></div></div>
+              </div>
+              <div class="slots-result-text" id="slotsResult"></div>
+            </div>
+
+            <div class="sheet-section-label">Ставка</div>
+            <div class="slots-bet-section">
+              <div class="slots-bet-options" id="slotsBetOptions">
+                <button class="slots-bet-opt" onclick="selectSlotsBet(10,this)">10 <img class="star-icon" src="https://nztcdn.com/files/6514f1e6-dab4-4d49-806a-3ff22d7793e5.webp" alt=""></button>
+                <button class="slots-bet-opt" onclick="selectSlotsBet(25,this)">25 <img class="star-icon" src="https://nztcdn.com/files/6514f1e6-dab4-4d49-806a-3ff22d7793e5.webp" alt=""></button>
+                <button class="slots-bet-opt selected" onclick="selectSlotsBet(50,this)">50 <img class="star-icon" src="https://nztcdn.com/files/6514f1e6-dab4-4d49-806a-3ff22d7793e5.webp" alt=""></button>
+                <button class="slots-bet-opt" onclick="selectSlotsBet(100,this)">100 <img class="star-icon" src="https://nztcdn.com/files/6514f1e6-dab4-4d49-806a-3ff22d7793e5.webp" alt=""></button>
+              </div>
+            </div>
+
+            <button class="slots-spin-btn" id="slotsSpinBtn" onclick="spinSlots()">
+              КРУТИТЬ
+              <img class="star-icon" src="https://nztcdn.com/files/6514f1e6-dab4-4d49-806a-3ff22d7793e5.webp" alt="">
+            </button>
+
+            <div class="slots-rules">
+              <div class="slots-rules-title">Правила выигрыша</div>
+              <div class="slots-rule-row">
+                <span style="color:var(--green);">3 совпадения</span> = <span>3x от ставки</span>
+              </div>
+              <div class="slots-rule-row">
+                <span style="color:var(--gold);">2 совпадения</span> = <span>1.5x от ставки</span>
+              </div>
+              <div class="slots-rule-row">
+                <span style="color:var(--red);">0 совпадений</span> = <span>Проигрыш (0x)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== BONUSES SECTION ===== -->
+      <div class="section" id="bonusesSection">
+        <div style="padding:0 4px;">
+          <div style="text-align:center;font-size:20px;font-weight:800;margin-bottom:16px;">Бонусы</div>
+          <div class="bonus-card" onclick="openDeposit()" style="margin-bottom:12px;">
+            <div class="bonus-icon" style="background:rgba(0,230,118,0.15);">
+              <span style="font-size:28px;">+</span>
+            </div>
+            <div class="bonus-info">
+              <div class="bonus-title" style="color:var(--green);font-size:16px;">+150% к первому пополнению</div>
+              <div class="bonus-desc" style="font-size:13px;">Пополни баланс впервые и получи бонус +150% к сумме пополнения! Например: пополнил 100 звезд - получил 250 звезд на баланс!</div>
+            </div>
+          </div>
+          <div class="bonus-card" onclick="window.open('https://t.me/obnalcontora','_blank')">
+            <div class="bonus-icon" style="background:rgba(124,77,255,0.15);">
+              <span style="font-size:28px;">&#127916;</span>
+            </div>
+            <div class="bonus-info">
+              <div class="bonus-title" style="color:var(--accent);font-size:16px;">Подарок за сторис</div>
+              <div class="bonus-desc" style="font-size:13px;">Выложите видео в сторис и получите случайный подарок от 15 до 100 звезд! Для проверки видео напишите <b style="color:var(--accent);">@obnalcontora</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -935,6 +1375,18 @@
   <button class="nav-btn" onclick="switchSection(3)" id="navCrash">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L4 20h16L12 2z"/><path d="M12 10v4"/></svg>
     Краш
+  </button>
+  <button class="nav-btn" onclick="switchSection(4)" id="navMiner">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8" cy="8" r="1.5"/><circle cx="16" cy="8" r="1.5"/><circle cx="8" cy="16" r="1.5"/><circle cx="16" cy="16" r="1.5"/><circle cx="12" cy="12" r="1.5"/></svg>
+    Минер
+  </button>
+  <button class="nav-btn" onclick="switchSection(5)" id="navSlots">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M8 8v8"/><path d="M12 8v8"/><path d="M16 8v8"/></svg>
+    Слоты
+  </button>
+  <button class="nav-btn" onclick="switchSection(6)" id="navBonuses">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    Бонусы
   </button>
 </div>
 
@@ -980,6 +1432,19 @@
 
 <script>
 // ========================
+// SPLASH SCREEN - 2 seconds then fade out
+// ========================
+(function() {
+  const splash = document.getElementById('splashOverlay');
+  setTimeout(function() {
+    splash.classList.add('fade-out');
+    setTimeout(function() {
+      splash.style.display = 'none';
+    }, 600);
+  }, 2000);
+})();
+
+// ========================
 // CONSTANTS
 // ========================
 const STAR_IMG = 'https://nztcdn.com/files/6514f1e6-dab4-4d49-806a-3ff22d7793e5.webp';
@@ -989,6 +1454,12 @@ const MOOD_PLAY = 'https://i.postimg.cc/QxvmXD36/Animated-Ag-ADyxs-AAte-Jk-Us.gi
 const MOOD_WAIT = 'https://emojio.ru/images/apple-b/1f559.png';
 const ROCKET_IMG_SRC = 'https://i.postimg.cc/QxvmXD36/Animated-Ag-ADyxs-AAte-Jk-Us.gif';
 const EXPLOSION_IMG_SRC = 'https://i.postimg.cc/1tmCZGqp/Animated-Ag-AD6x0AAs-KU6Es.gif';
+const MINE_IMG = 'https://em-content.zobj.net/source/apple/271/bomb_1f4a3.png';
+const DIAMOND_IMG = 'https://emojio.ru/images/apple-b/1f48e.png';
+const SLOT_CHERRY = 'https://emojio.ru/images/apple-b/1f352.png';
+const SLOT_SEVEN = 'https://em-content.zobj.net/source/apple/25/keycap-digit-seven_37-20e3.png';
+const SLOT_APPLE = 'https://emojio.ru/images/apple-b/1f34e.png';
+const SLOT_SYMBOLS = [SLOT_CHERRY, SLOT_SEVEN, SLOT_APPLE];
 
 const PLAYER_NAMES = [
   'gigwq','okswiss','grabes','killo','higff','riwxc','mfbvc',
@@ -1001,6 +1472,8 @@ const PLAYER_NAMES = [
   'snipershoot','topG_trader','lambodriver','hodlgang','bearish_af',
   'starkiller','megawhale','profitmaxx','rugpull_ed','elon_fan42'
 ];
+
+const TOTAL_SECTIONS = 7;
 
 // ========================
 // GLOBAL STATE
@@ -1038,13 +1511,11 @@ function doLogin() {
   updateHomePlayer();
 }
 
-// Check saved username
 (function checkSaved() {
   const saved = localStorage.getItem('sg_username');
   if (saved && saved.length > 1) {
     playerUsername = saved;
     document.getElementById('loginOverlay').classList.add('hidden');
-    // defer updateHomePlayer
     setTimeout(updateHomePlayer, 50);
   }
 })();
@@ -1076,14 +1547,26 @@ function selectDepositMethod(method) {
 }
 
 // ========================
-// SECTION SWITCHING (now 4 sections)
+// SECTION SWITCHING (7 sections)
 // ========================
 function switchSection(idx) {
   currentSection = idx;
-  document.getElementById('sectionsTrack').style.transform = `translateX(-${idx * 25}%)`;
+  const pct = (100 / TOTAL_SECTIONS) * idx;
+  document.getElementById('sectionsTrack').style.transform = `translateX(-${pct}%)`;
   document.querySelectorAll('.nav-btn').forEach((b,i) => {
     b.classList.toggle('active', i === idx);
   });
+  // Move island down when in trading
+  const island = document.getElementById('balanceIsland');
+  if (idx === 1) {
+    island.style.transform = 'translateY(70px)';
+    island.style.transition = 'transform 0.4s ease';
+    island.style.zIndex = '20';
+  } else {
+    island.style.transform = '';
+    island.style.transition = 'transform 0.4s ease';
+    island.style.zIndex = '';
+  }
 }
 
 // ========================
@@ -1311,6 +1794,20 @@ function t_updateGame(now) {
     t_currentCandle.bullish = t_currentCandle.close >= t_currentCandle.open;
   }
 
+  // Fade inner overlay as multiplier grows
+  const overlay = document.getElementById('tradingInnerOverlay');
+  if (t_multiplier > 1.5) {
+    overlay.style.opacity = Math.max(0, 1 - (t_multiplier - 1.5) / 1.5).toString();
+  } else {
+    overlay.style.opacity = '1';
+  }
+
+  // Grow chart container as game progresses
+  const chartC = document.getElementById('chartContainer');
+  const baseH = 220;
+  const growMult = Math.min((t_multiplier - 1) * 0.5, 1);
+  chartC.style.minHeight = (baseH + growMult * 80) + 'px';
+
   t_updateFakePlayers();
   t_updateUI();
 }
@@ -1341,6 +1838,11 @@ function t_crash() {
   t_renderHistory();
   t_renderPlayers();
   t_updateUI();
+
+  // Reset chart height
+  document.getElementById('chartContainer').style.minHeight = '220px';
+  const overlay = document.getElementById('tradingInnerOverlay');
+  overlay.style.opacity = '1';
 
   setTimeout(() => t_startCountdown(), 3000);
 }
@@ -1428,7 +1930,7 @@ function t_updateUI() {
   }
 }
 
-// DRAWING - Trading candles start from middle
+// DRAWING - Trading candles (scaled down 20x, but amplified by multiplier delta)
 function t_draw() {
   const now = performance.now();
   t_updateGame(now);
@@ -1452,23 +1954,43 @@ function t_drawCandles(w,h) {
   if (t_currentCandle) all.push(t_currentCandle);
   if (!all.length) return;
 
-  let minV=Infinity, maxV=-Infinity;
-  all.forEach(c => { minV=Math.min(minV,c.low); maxV=Math.max(maxV,c.high); });
-  minV = Math.min(minV, t_priceStart*0.9);
-  maxV = Math.max(maxV, t_priceStart*1.1);
-  const range = maxV - minV || 0.1;
-  minV -= range*0.15;
-  maxV += range*0.15;
-  minV = Math.max(0,minV);
+  // Scale candle values: compress base values by /20 but amplify difference from start
+  const scaleFactor = 20;
+  const amplify = 10; // amplification of multiplier-based movement
 
-  const total = all.length;
+  const scaled = all.map(c => {
+    const oD = (c.open - t_priceStart) / scaleFactor * amplify;
+    const cD = (c.close - t_priceStart) / scaleFactor * amplify;
+    const hD = (c.high - t_priceStart) / scaleFactor * amplify;
+    const lD = (c.low - t_priceStart) / scaleFactor * amplify;
+    const base = t_priceStart / scaleFactor;
+    return {
+      open: base + oD,
+      close: base + cD,
+      high: base + hD,
+      low: base + lD,
+      bullish: c.bullish
+    };
+  });
+
+  let minV=Infinity, maxV=-Infinity;
+  scaled.forEach(c => { minV=Math.min(minV,c.low); maxV=Math.max(maxV,c.high); });
+  const baseScaled = t_priceStart / scaleFactor;
+  minV = Math.min(minV, baseScaled * 0.9);
+  maxV = Math.max(maxV, baseScaled * 1.1);
+  const range = maxV - minV || 0.1;
+  minV -= range * 0.15;
+  maxV += range * 0.15;
+  minV = Math.max(0, minV);
+
+  const total = scaled.length;
   const baseVis = 16;
   let maxVis;
   if (total <= baseVis) { maxVis = baseVis; }
   else { maxVis = Math.min(total, baseVis + Math.floor((total - baseVis) * 0.8)); }
 
   const startIdx = Math.max(0, total - maxVis);
-  const vis = all.slice(startIdx);
+  const vis = scaled.slice(startIdx);
   const areaW = w - 40;
   const cW = Math.max(areaW / maxVis, 4);
   const gap = Math.max(cW * 0.15, 1.5);
@@ -1476,17 +1998,15 @@ function t_drawCandles(w,h) {
 
   const mapY = v => h - 20 - ((v - minV) / (maxV - minV)) * (h - 40);
 
-  // Calculate offset to start candles from middle of screen
   const candlesWidth = vis.length * cW;
   let offsetX = 30;
   if (candlesWidth < areaW) {
-    // Center / start from middle: offset so first candle appears at ~middle
     offsetX = Math.max(30, (w / 2) - candlesWidth + cW / 2);
   }
 
   // Start price line
   if (t_gameState === 'playing' || t_gameState === 'crashed') {
-    const sy = mapY(t_priceStart);
+    const sy = mapY(baseScaled);
     t_ctx.strokeStyle='rgba(255,255,255,0.15)'; t_ctx.lineWidth=0.5; t_ctx.setLineDash([2,4]);
     t_ctx.beginPath(); t_ctx.moveTo(0,sy); t_ctx.lineTo(w,sy); t_ctx.stroke(); t_ctx.setLineDash([]);
     t_ctx.font='500 9px Inter,sans-serif'; t_ctx.fillStyle='rgba(255,255,255,0.3)'; t_ctx.textAlign='right';
@@ -1494,7 +2014,8 @@ function t_drawCandles(w,h) {
   }
   // Current price line
   if (t_gameState === 'playing') {
-    const ly = mapY(t_priceValue);
+    const curScaled = (t_priceValue - t_priceStart) / scaleFactor * amplify + baseScaled;
+    const ly = mapY(curScaled);
     const isUp = t_multiplier >= 1.00;
     t_ctx.strokeStyle = isUp ? 'rgba(0,230,118,0.3)' : 'rgba(255,23,68,0.3)';
     t_ctx.lineWidth=1; t_ctx.setLineDash([4,4]);
@@ -1943,7 +2464,7 @@ function closeWinPopup() {
 }
 
 // ========================
-// CRASH (ROCKET) GAME
+// CRASH (ROCKET) GAME - 2x speed
 // ========================
 let c_gameState = 'waiting';
 let c_multiplier = 1.00;
@@ -1964,7 +2485,6 @@ let c_explosionTime = 0;
 const c_canvas = document.getElementById('crashCanvas');
 const c_ctx = c_canvas.getContext('2d');
 
-// Rocket & explosion image elements
 const crashRocketEl = document.getElementById('crashRocketImg');
 const crashExplosionEl = document.getElementById('crashExplosionImg');
 
@@ -2051,8 +2571,8 @@ function c_updateGame(now) {
   if (c_gameState !== 'playing') return;
 
   const elapsed = (now - c_gameStartTime) / 1000;
-  // Multiplier grows 1.8x faster: 0.06 * 1.8 = 0.108
-  c_multiplier = Math.pow(Math.E, 0.108 * elapsed);
+  // Multiplier grows 2x faster: 0.06 * 2 * 1.8 = 0.216
+  c_multiplier = Math.pow(Math.E, 0.216 * elapsed);
   c_multiplier = Math.round(c_multiplier * 100) / 100;
 
   if (c_multiplier >= c_crashPoint) {
@@ -2061,13 +2581,11 @@ function c_updateGame(now) {
     return;
   }
 
-  // Timer bar
   const pct = Math.max(0, 1 - elapsed / 60);
   const tb = document.getElementById('crashTimerBar');
   tb.style.width = (pct * 100) + '%';
   tb.style.background = 'var(--green)';
 
-  // Auto cashout
   if (t_autoCashoutEnabled && c_betPlaced && c_multiplier >= t_autoCashoutValue) {
     c_cashOut();
     return;
@@ -2081,7 +2599,6 @@ function c_crash(now) {
   c_gameState = 'crashed';
   c_explosionTime = now;
 
-  // Hide rocket, show explosion
   crashRocketEl.style.display = 'none';
   crashExplosionEl.style.left = crashRocketEl.style.left;
   crashExplosionEl.style.top = crashRocketEl.style.top;
@@ -2179,7 +2696,6 @@ function c_draw() {
   const h = c_canvas.height / window.devicePixelRatio;
   c_ctx.clearRect(0, 0, w, h);
 
-  // Draw grid
   c_ctx.strokeStyle = 'rgba(255,255,255,0.035)';
   c_ctx.lineWidth = 0.5;
   for (let i = 0; i < 8; i++) { const y = (h/8)*(i+1); c_ctx.beginPath(); c_ctx.moveTo(0,y); c_ctx.lineTo(w,y); c_ctx.stroke(); }
@@ -2188,7 +2704,6 @@ function c_draw() {
   if (c_gameState === 'playing' || c_gameState === 'crashed') {
     const progress = c_gameState === 'crashed' ? 1 : Math.min((c_multiplier - 1) / (c_crashPoint > 3 ? c_crashPoint * 0.8 : 3), 0.95);
 
-    // Rocket position - straight diagonal line
     const startX = 30;
     const startY = h - 30;
     const endX = w - 40;
@@ -2196,8 +2711,6 @@ function c_draw() {
     c_rocketX = startX + progress * (endX - startX);
     c_rocketY = startY + progress * (endY - startY);
 
-    // Draw green glow line (thick, straight)
-    // Glow layer
     c_ctx.save();
     c_ctx.strokeStyle = 'rgba(0,230,118,0.15)';
     c_ctx.lineWidth = 12;
@@ -2206,7 +2719,6 @@ function c_draw() {
     c_ctx.moveTo(startX, startY);
     c_ctx.lineTo(c_rocketX, c_rocketY);
     c_ctx.stroke();
-    // Main line
     c_ctx.strokeStyle = '#00e676';
     c_ctx.lineWidth = 4;
     c_ctx.shadowColor = '#00e676';
@@ -2218,7 +2730,6 @@ function c_draw() {
     c_ctx.shadowBlur = 0;
     c_ctx.restore();
 
-    // Draw filled area under the line
     c_ctx.save();
     const grad = c_ctx.createLinearGradient(0, endY, 0, startY);
     grad.addColorStop(0, 'rgba(0,230,118,0.18)');
@@ -2232,12 +2743,10 @@ function c_draw() {
     c_ctx.fill();
     c_ctx.restore();
 
-    // Position rocket image element (GIF)
     const percX = (c_rocketX / w) * 100;
     const percY = (c_rocketY / h) * 100;
 
-    // Calculate rocket tilt - gradually tilts upward as it flies higher
-    const tiltAngle = -15 - progress * 45; // from -15deg to -60deg (tilting nose up)
+    const tiltAngle = -15 - progress * 45;
 
     if (c_gameState === 'playing') {
       crashRocketEl.style.left = percX + '%';
@@ -2245,7 +2754,6 @@ function c_draw() {
       crashRocketEl.style.display = 'block';
       crashRocketEl.style.transform = 'translate(-50%,-50%) rotate(' + tiltAngle + 'deg)';
 
-      // Multiplier text on canvas near rocket
       c_ctx.font = '800 22px Inter, sans-serif';
       c_ctx.fillStyle = '#fff';
       c_ctx.textAlign = 'center';
@@ -2255,12 +2763,10 @@ function c_draw() {
       c_ctx.shadowBlur = 0;
     }
 
-    // Explosion
     if (c_gameState === 'crashed') {
       crashExplosionEl.style.left = percX + '%';
       crashExplosionEl.style.top = percY + '%';
 
-      // Crash text
       c_ctx.font = '900 36px Inter, sans-serif';
       c_ctx.fillStyle = '#ff1744';
       c_ctx.textAlign = 'center';
@@ -2274,7 +2780,6 @@ function c_draw() {
   } else {
     crashRocketEl.style.display = 'none';
     crashExplosionEl.classList.remove('visible');
-    // Waiting/countdown
     c_ctx.font = '600 16px Inter, sans-serif';
     c_ctx.fillStyle = 'rgba(255,255,255,0.3)';
     c_ctx.textAlign = 'center';
@@ -2402,6 +2907,296 @@ function onCrashActionClick() {
 }
 
 // ========================
+// MINER GAME
+// ========================
+let m_bet = 50;
+let m_minesCount = 5;
+let m_gameActive = false;
+let m_grid = []; // 25 cells, true = mine, false = diamond
+let m_revealed = [];
+let m_diamondsFound = 0;
+
+function initMiner() {
+  minerBuildGrid();
+}
+
+function selectMinerBet(amount, el) {
+  if (m_gameActive) return;
+  m_bet = amount;
+  document.querySelectorAll('.miner-bet-opt').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('minerBetDisplay').textContent = amount;
+}
+
+function selectMines(count, el) {
+  if (m_gameActive) return;
+  m_minesCount = count;
+  document.querySelectorAll('.miner-mines-opt').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('minerMinesDisplay').textContent = count;
+}
+
+function minerBuildGrid() {
+  const grid = document.getElementById('minerGrid');
+  grid.innerHTML = '';
+  for (let i = 0; i < 25; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'miner-cell';
+    cell.innerHTML = '<div class="cell-shine"></div><span style="color:rgba(255,255,255,0.15);font-size:20px;">?</span>';
+    cell.onclick = () => minerRevealCell(i);
+    grid.appendChild(cell);
+  }
+}
+
+function minerStartGame() {
+  if (m_gameActive) return;
+  if (m_bet > balance) { alert('Недостаточно звезд!'); return; }
+
+  balance -= m_bet;
+  document.getElementById('balanceDisplay').textContent = balance;
+  updateHomePlayer();
+
+  m_gameActive = true;
+  m_diamondsFound = 0;
+  m_revealed = new Array(25).fill(false);
+
+  // Generate mines
+  m_grid = new Array(25).fill(false);
+  const minePositions = [];
+  while (minePositions.length < m_minesCount) {
+    const pos = Math.floor(Math.random() * 25);
+    if (!minePositions.includes(pos)) minePositions.push(pos);
+  }
+  minePositions.forEach(p => m_grid[p] = true);
+
+  minerBuildGrid();
+  document.getElementById('minerFoundDisplay').textContent = '0';
+  document.getElementById('minerMultDisplay').textContent = '1.00x';
+  document.getElementById('minerPlayBtn').style.display = 'none';
+  document.getElementById('minerCashoutBtn').style.display = 'flex';
+    document.getElementById('minerCashoutText').textContent = `ЗАБРАТЬ ${m_bet}`;
+    document.getElementById('minerResultOverlay').classList.remove('visible');
+    // Smaller star in play button
+    const playBtnStar = document.querySelector('#minerPlayBtn .star-icon');
+    if (playBtnStar) { playBtnStar.style.width = '16px'; playBtnStar.style.height = '16px'; }
+}
+
+function minerGetMultiplier() {
+  if (m_diamondsFound === 0) return 1.00;
+  const safeCells = 25 - m_minesCount;
+  // Each revealed diamond increases multiplier
+  let mult = 1.0;
+  for (let i = 0; i < m_diamondsFound; i++) {
+    mult *= (25 - i) / (safeCells - i);
+  }
+  return Math.round(mult * 100) / 100;
+}
+
+function minerRevealCell(idx) {
+  if (!m_gameActive || m_revealed[idx]) return;
+
+  m_revealed[idx] = true;
+  const cells = document.getElementById('minerGrid').children;
+  const cell = cells[idx];
+
+  if (m_grid[idx]) {
+    // HIT MINE
+    cell.classList.add('revealed', 'mine');
+    cell.innerHTML = `<img src="${MINE_IMG}" alt="mine">`;
+
+    // Reveal all mines
+    for (let i = 0; i < 25; i++) {
+      if (m_grid[i] && !m_revealed[i]) {
+        cells[i].classList.add('revealed', 'mine');
+        cells[i].innerHTML = `<img src="${MINE_IMG}" alt="mine">`;
+      }
+    }
+
+    m_gameActive = false;
+    document.getElementById('minerCashoutBtn').style.display = 'none';
+    document.getElementById('minerPlayBtn').style.display = 'flex';
+
+    // Show result
+    const overlay = document.getElementById('minerResultOverlay');
+    document.getElementById('minerResultText').innerHTML = '<span style="color:var(--red);">БАБАХ!</span>';
+    document.getElementById('minerResultAmount').innerHTML = `Проигрыш: -${m_bet} <img style="width:16px;height:16px;" src="${STAR_IMG}" alt="">`;
+    overlay.classList.add('visible');
+  } else {
+    // Diamond!
+    cell.classList.add('revealed', 'diamond');
+    cell.innerHTML = `<div class="cell-shine"></div><img src="${DIAMOND_IMG}" alt="diamond">`;
+    m_diamondsFound++;
+    document.getElementById('minerFoundDisplay').textContent = m_diamondsFound;
+    const mult = minerGetMultiplier();
+    document.getElementById('minerMultDisplay').textContent = mult.toFixed(2) + 'x';
+    const winAmount = Math.floor(m_bet * mult);
+    document.getElementById('minerCashoutText').textContent = `ЗАБРАТЬ ${winAmount}`;
+
+    // Check if all diamonds found
+    if (m_diamondsFound >= 25 - m_minesCount) {
+      minerCashout();
+    }
+  }
+}
+
+function minerCashout() {
+  if (!m_gameActive) return;
+  m_gameActive = false;
+
+  const mult = minerGetMultiplier();
+  const winAmount = Math.floor(m_bet * mult);
+  balance += winAmount;
+  document.getElementById('balanceDisplay').textContent = balance;
+  updateHomePlayer();
+
+  // Reveal remaining mines
+  const cells = document.getElementById('minerGrid').children;
+  for (let i = 0; i < 25; i++) {
+    if (m_grid[i] && !m_revealed[i]) {
+      cells[i].classList.add('revealed', 'mine');
+      cells[i].innerHTML = `<img src="${MINE_IMG}" alt="mine">`;
+    }
+    if (!m_grid[i] && !m_revealed[i]) {
+      cells[i].classList.add('revealed', 'diamond');
+      cells[i].style.opacity = '0.4';
+      cells[i].innerHTML = `<img src="${DIAMOND_IMG}" alt="diamond">`;
+    }
+  }
+
+  document.getElementById('minerCashoutBtn').style.display = 'none';
+  document.getElementById('minerPlayBtn').style.display = 'flex';
+
+  const overlay = document.getElementById('minerResultOverlay');
+  const profit = winAmount - m_bet;
+  document.getElementById('minerResultText').innerHTML = `<span style="color:var(--green);">ПОБЕДА!</span>`;
+  document.getElementById('minerResultAmount').innerHTML = `+${profit} <img style="width:16px;height:16px;" src="${STAR_IMG}" alt=""> (${mult.toFixed(2)}x)`;
+  overlay.classList.add('visible');
+}
+
+function minerReset() {
+  document.getElementById('minerResultOverlay').classList.remove('visible');
+  minerBuildGrid();
+  document.getElementById('minerFoundDisplay').textContent = '0';
+  document.getElementById('minerMultDisplay').textContent = '1.00x';
+  document.getElementById('minerPlayBtn').style.display = 'flex';
+  document.getElementById('minerCashoutBtn').style.display = 'none';
+}
+
+// ========================
+// SLOTS GAME
+// ========================
+let s_bet = 50;
+let s_spinning = false;
+
+function initSlots() {
+  slotsPopulateReels();
+}
+
+function selectSlotsBet(amount, el) {
+  if (s_spinning) return;
+  s_bet = amount;
+  document.querySelectorAll('.slots-bet-opt').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function slotsPopulateReels() {
+  for (let r = 1; r <= 3; r++) {
+    const track = document.getElementById('slotTrack' + r);
+    track.innerHTML = '';
+    // Show one symbol
+    const sym = SLOT_SYMBOLS[Math.floor(Math.random() * SLOT_SYMBOLS.length)];
+    const item = document.createElement('div');
+    item.className = 'slot-reel-item';
+    item.innerHTML = `<img src="${sym}" alt="">`;
+    track.appendChild(item);
+    track.style.transform = 'translateY(0)';
+  }
+}
+
+function spinSlots() {
+  if (s_spinning) return;
+  if (s_bet > balance) { alert('Недостаточно звезд!'); return; }
+
+  s_spinning = true;
+  balance -= s_bet;
+  document.getElementById('balanceDisplay').textContent = balance;
+  updateHomePlayer();
+  document.getElementById('slotsResult').textContent = '';
+  document.getElementById('slotsResult').className = 'slots-result-text';
+  document.getElementById('slotsSpinBtn').disabled = true;
+
+  // Generate result symbols
+  const results = [
+    Math.floor(Math.random() * 3),
+    Math.floor(Math.random() * 3),
+    Math.floor(Math.random() * 3)
+  ];
+
+  // Build reels with many items, result at bottom
+  const reelItems = 15;
+
+  for (let r = 0; r < 3; r++) {
+    const track = document.getElementById('slotTrack' + (r + 1));
+    track.innerHTML = '';
+    track.style.transition = 'none';
+    track.style.transform = 'translateY(0)';
+
+    for (let i = 0; i < reelItems; i++) {
+      const item = document.createElement('div');
+      item.className = 'slot-reel-item';
+      let symIdx;
+      if (i === reelItems - 1) {
+        symIdx = results[r];
+      } else {
+        symIdx = Math.floor(Math.random() * 3);
+      }
+      item.innerHTML = `<img src="${SLOT_SYMBOLS[symIdx]}" alt="">`;
+      track.appendChild(item);
+    }
+
+    const targetY = -((reelItems - 1) * 90);
+    const delay = r * 300;
+
+    setTimeout(() => {
+      track.style.transition = `transform ${1.5 + r * 0.3}s cubic-bezier(0.15, 0.85, 0.35, 1)`;
+      track.style.transform = `translateY(${targetY}px)`;
+    }, delay);
+  }
+
+  // Calculate win after animation
+  const totalTime = 1500 + 2 * 300 + 600;
+  setTimeout(() => {
+    // Count matches
+    const r0 = results[0], r1 = results[1], r2 = results[2];
+    let matches = 0;
+    if (r0 === r1 && r1 === r2) matches = 3;
+    else if (r0 === r1 || r1 === r2 || r0 === r2) matches = 2;
+
+    const resultEl = document.getElementById('slotsResult');
+
+    if (matches === 3) {
+      const winAmount = Math.floor(s_bet * 3);
+      balance += winAmount;
+      resultEl.textContent = `ДЖЕКПОТ! +${winAmount - s_bet} звезд (3x)`;
+      resultEl.className = 'slots-result-text big-win';
+    } else if (matches === 2) {
+      const winAmount = Math.floor(s_bet * 1.5);
+      balance += winAmount;
+      resultEl.textContent = `ВЫИГРЫШ! +${winAmount - s_bet} звезд (1.5x)`;
+      resultEl.className = 'slots-result-text win';
+    } else {
+      resultEl.textContent = `Проигрыш: -${s_bet} звезд`;
+      resultEl.className = 'slots-result-text lose';
+    }
+
+    document.getElementById('balanceDisplay').textContent = balance;
+    updateHomePlayer();
+    s_spinning = false;
+    document.getElementById('slotsSpinBtn').disabled = false;
+  }, totalTime);
+}
+
+// ========================
 // POLYFILL roundRect
 // ========================
 if (!CanvasRenderingContext2D.prototype.roundRect) {
@@ -2423,69 +3218,53 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
 t_init();
 c_init();
 initCases();
-
-// ========================
-// TELEGRAM AUTO LOGIN
-// ========================
-
-let telegramUserId = null;
-
-function initTelegramAuth() {
-
-  if (window.Telegram && window.Telegram.WebApp) {
-
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
-
-    const user = tg.initDataUnsafe?.user;
-
-    if (user) {
-
-      telegramUserId = user.id;
-
-      if (user.username) {
-        playerUsername = '@' + user.username;
-      } else {
-        playerUsername = user.first_name;
-      }
-
-      localStorage.setItem('sg_username', playerUsername);
-      localStorage.setItem('sg_userid', telegramUserId);
-
-      const overlay = document.getElementById('loginOverlay');
-      if (overlay) overlay.classList.add('hidden');
-
-      if (typeof updateHomePlayer === "function") {
-        updateHomePlayer();
-      }
-
-      console.log('Telegram auth success:', user);
-      return;
-    }
-  }
-
-  fallbackLogin();
-}
-
-function fallbackLogin() {
-  const saved = localStorage.getItem('sg_username');
-
-  if (saved && saved.length > 1) {
-    playerUsername = saved;
-    const overlay = document.getElementById('loginOverlay');
-    if (overlay) overlay.classList.add('hidden');
-
-    if (typeof updateHomePlayer === "function") {
-      setTimeout(updateHomePlayer, 50);
-    }
-  }
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-  initTelegramAuth();
-});
-
+initMiner();
+initSlots();
 </script>
+
+<script>
+/* === TELEGRAM MINI APP AUTH === */
+const tg = window.Telegram?.WebApp;
+if (tg) tg.ready();
+
+const tgUser = tg?.initDataUnsafe?.user;
+const USER = {
+  id: tgUser?.id || 'guest',
+  name: tgUser?.username || tgUser?.first_name || 'Guest',
+  avatar: (tgUser?.username || tgUser?.first_name || 'G')[0].toUpperCase()
+};
+
+if (tgUser) {
+  const lo = document.getElementById('loginOverlay');
+  if (lo) lo.style.display = 'none';
+  const ha = document.getElementById('homeAvatar');
+  if (ha) ha.textContent = USER.avatar;
+  const hn = document.getElementById('homePlayerName');
+  if (hn) hn.textContent = USER.name;
+}
+
+/* === GLOBAL BALANCE === */
+const BALANCE_KEY = 'star_balance_' + USER.id;
+let balance = parseInt(localStorage.getItem(BALANCE_KEY)) || 1000;
+
+function renderBalance() {
+  const ids = ['balanceDisplay','homeBalance'];
+  ids.forEach(id=>{
+    const el = document.getElementById(id);
+    if (el) el.textContent = balance;
+  });
+}
+function saveBalance() {
+  localStorage.setItem(BALANCE_KEY, balance);
+  renderBalance();
+}
+function addBalance(v){ balance+=v; saveBalance(); }
+function subtractBalance(v){
+  if(balance<v){ alert('Недостаточно средств'); return false; }
+  balance-=v; saveBalance(); return true;
+}
+renderBalance();
+</script>
+
 </body>
 </html>
